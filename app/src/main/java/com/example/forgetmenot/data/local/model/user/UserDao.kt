@@ -26,4 +26,7 @@ interface UserDao{
     @Update
     suspend fun update(user: UserEntity)
 
+    @Query("UPDATE users SET password = :newPassword WHERE id = :userId")
+    suspend fun updatePassword(userId: Long, newPassword: String)
+
 }

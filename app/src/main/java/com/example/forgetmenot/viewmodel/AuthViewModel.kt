@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 import com.example.forgetmenot.domain.validation.*
 import com.example.forgetmenot.data.local.model.user.UserEntity
 
-
 data class LoginUiState(
     val email: String = "",
     val pass: String = "",
@@ -44,13 +43,26 @@ data class ProfileUiState(
     val id: Long = 0L,
     val name: String = "",
     val email: String = "",
+
+    val currentPassword: String = "",
+    val newPassword: String = "",
+    val confirmNewPassword: String = "",
+
     val isSubmitting: Boolean = false,
     val canSubmit: Boolean = false,
+    val isChangingPassword: Boolean = false,
+    val canChangePassword: Boolean = false,
     val saveSuccess: Boolean = false,
+    val passwordChangeSuccess: Boolean = false,
+
     val errorMsg: String? = null,
+    val passwordChangeErrorMsg: String? = null,
 
     val nameError: String? = null,
     val emailError: String? = null,
+    val currentPasswordError: String? = null,
+    val newPasswordError: String? = null,
+    val confirmNewPasswordError: String? = null
 )
 
 class AuthViewModel(
@@ -236,4 +248,57 @@ class AuthViewModel(
             }
         }
     }
+
+    fun onCurrentPasswordChange(value: String) {
+        _profile.update { it.copy(currentPassword = value, currentPasswordError = validateNotBlank(value, "Contraseña Actual")) }
+        recomputePasswordCanSubmit()
+    }
+    fun onNewPasswordChange(value: String) {
+        _profile.update { it.copy(newPassword = value, newPasswordError = validateStrongPassword(value)) }
+        _profile.update { it.copy(confirmNewPasswordError = validateConfirm(it.newPassword, it.confirmNewPassword)) }
+        recomputePasswordCanSubmit()
+    }
+    fun onConfirmNewPasswordChange(value: String) {
+        _profile.update { it.copy(confirmNewPassword = value, confirmNewPasswordError = validateConfirm(it.newPassword, value)) }
+        recomputePasswordCanSubmit()
+    }
+    private fun recomputePasswordCanSubmit() {
+        val s = _profile.value
+        val noErrors = listOf(s.currentPasswordError, s.newPasswordError, s.confirmNewPasswordError).all { it == null }
+        val filled = s.currentPassword.isNotBlank() && s.newPassword.isNotBlank() && s.confirmNewPassword.isNotBlank()
+        _profile.update { it.copy(canChangePassword = noErrors && filled) }
+    }
+    fun changePassword() {
+        val s = _profile.value
+        if (!s.canChangePassword || s.isChangingPassword) return
+        viewModelScope.launch {
+            _profile.update { it.copy(isChangingPassword = true, passwordChangeErrorMsg = null, passwordChangeSuccess = false) }
+            delay(500)
+
+
+            val verifyResult = repository.verifyPassword(s.id, s.currentPassword)
+
+            if (verifyResult.isSuccess) {
+
+                val updateResult = repository.updatePassword(s.id, s.newPassword)
+                _profile.update {
+                    if (updateResult.isSuccess) {
+                        it.copy(
+                            isChangingPassword = false, passwordChangeSuccess = true,
+                            currentPassword = "", newPassword = "", confirmNewPassword = ""
+                        )
+                    } else {
+                        it.copy(isChangingPassword = false, passwordChangeErrorMsg = "Error al guardar la nueva contraseña.")
+                    }
+                }
+            } else {
+                _profile.update { it.copy(isChangingPassword = false, passwordChangeErrorMsg = verifyResult.exceptionOrNull()?.message ?: "La contraseña actual es incorrecta.") }
+            }
+        }
+    }
+    fun clearPasswordChangeResult() {
+        _profile.update { it.copy(passwordChangeSuccess = false, passwordChangeErrorMsg = null) }
+    }
+
+
 }

@@ -11,45 +11,78 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.forgetmenot.data.local.model.Article
 import android.net.Uri
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import com.example.forgetmenot.ui.components.ArticleForm
+import com.example.forgetmenot.viewmodel.ArticleViewModel
 
 @Composable
 fun DetailsScreen(
-    article: Article?,
+    articleId: Long,
+    articleViewModel: ArticleViewModel,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     onGoCamera: () -> Unit,
     newImageUri: String?,
     onClearNewImage: () -> Unit
 ) {
-    if (article == null) {
-        Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Artículo no encontrado.")
-        }
-        return
+
+    val state by articleViewModel.formState.collectAsState()
+    val article by remember(articleId) {
+        derivedStateOf { articleViewModel.getArticleById(articleId) }
     }
 
-    val name = remember { mutableStateOf(article.name) }
-    val description = remember { mutableStateOf(article.description) }
-    val category = remember { mutableStateOf(article.category) }
-    val price = remember { mutableStateOf(article.price.toString()) }
-    val condition = remember { mutableStateOf(article.condition) }
-    val purchaseDate = remember { mutableStateOf(article.purchaseDate) }
-    val location = remember { mutableStateOf(article.location) }
-    val tags = remember { mutableStateOf(article.tags.joinToString(",")) }
-    var imageUri by remember { mutableStateOf(article.imageUrl) }
+    val name = remember { mutableStateOf("") }
+    val description = remember { mutableStateOf("") }
+    val category = remember { mutableStateOf("") }
+    val price = remember { mutableStateOf("") }
+    val condition = remember { mutableStateOf("") }
+    val purchaseDate = remember { mutableStateOf("") }
+    val location = remember { mutableStateOf("") }
+    val tags = remember { mutableStateOf("") }
+    var imageUri by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(article) {
+        article?.let {
+            articleViewModel.loadArticleIntoForm(it)
+        } ?: run {
+
+            onNavigateBack()
+        }
+    }
+
+    LaunchedEffect(state) {
+        name.value = state.name
+        description.value = state.description
+        category.value = state.category
+        price.value = state.price
+        condition.value = state.condition
+        purchaseDate.value = state.purchaseDate
+        location.value = state.location
+        tags.value = state.tags
+        imageUri = state.imageUrl
+    }
+
 
     LaunchedEffect(newImageUri) {
         if (newImageUri != null) {
-            imageUri = newImageUri
+            articleViewModel.setImageUrl(newImageUri)
             onClearNewImage()
         }
+    }
+
+    if (article == null) {
+        Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Cargando artículo...")
+        }
+        return
     }
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Text("Editar Artículo", style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(16.dp))
@@ -65,23 +98,38 @@ fun DetailsScreen(
             tags = tags
         )
 
+        LaunchedEffect(name.value) { if (name.value != state.name) articleViewModel.onNameChange(name.value) }
+        LaunchedEffect(description.value) { if (description.value != state.description) articleViewModel.onDescriptionChange(description.value) }
+        LaunchedEffect(category.value) { if (category.value != state.category) articleViewModel.onCategoryChange(category.value) }
+        LaunchedEffect(price.value) { if (price.value != state.price) articleViewModel.onPriceChange(price.value) }
+        LaunchedEffect(condition.value) { if (condition.value != state.condition) articleViewModel.onConditionChange(condition.value) }
+        LaunchedEffect(purchaseDate.value) { if (purchaseDate.value != state.purchaseDate) articleViewModel.onPurchaseDateChange(purchaseDate.value) }
+        LaunchedEffect(location.value) { if (location.value != state.location) articleViewModel.onLocationChange(location.value) }
+        LaunchedEffect(tags.value) { if (tags.value != state.tags) articleViewModel.onTagsChange(tags.value) }
+
         Spacer(Modifier.height(16.dp))
-
-
-        IconButton(onClick = onGoCamera) {
-            Icon(Icons.Default.CameraAlt, "Cambiar Foto")
-        }
 
         if (imageUri != null) {
             AsyncImage(
-                model = Uri.parse(imageUri),
+                model = Uri.parse(imageUri!!),
                 contentDescription = "Foto del artículo",
                 modifier = Modifier.size(100.dp)
             )
         }
+        IconButton(onClick = onGoCamera) {
+            Icon(Icons.Default.CameraAlt, "Cambiar Foto")
+        }
 
         Spacer(Modifier.height(24.dp))
-        Button(onClick = { /* Guardar cambios del artículo */ }, modifier = Modifier.fillMaxWidth()) {
+
+        Button(
+            onClick = {
+                articleViewModel.updateArticle(articleId)
+                onNavigateBack()
+            },
+            enabled = state.canSubmit,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("Guardar Cambios")
         }
     }

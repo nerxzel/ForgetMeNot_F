@@ -5,9 +5,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.forgetmenot.viewmodel.AuthViewModel
+import com.example.forgetmenot.ui.components.ProfileForm
+import androidx.compose.runtime.remember
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
+import com.example.forgetmenot.ui.components.PasswordChangeForm
+import androidx.compose.runtime.setValue
 
 @Composable
 fun ProfileScreen(
@@ -17,40 +24,55 @@ fun ProfileScreen(
 ) {
     val profileState by authViewModel.profile.collectAsState()
 
+    var showCurrentPassword by remember { mutableStateOf(false) }
+    var showNewPassword by remember { mutableStateOf(false) }
+    var showConfirmPassword by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
+
         Text("Editar Perfil", style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(16.dp))
 
-        OutlinedTextField(
-            value = profileState.name,
-            onValueChange = authViewModel::onProfileNameChange,
-            label = { Text("Nombre") },
-            modifier = Modifier.fillMaxWidth(),
+        ProfileForm(
+            profileState = profileState,
+            onNameChange = authViewModel::onProfileNameChange,
+            onEmailChange = authViewModel::onProfileEmailChange
         )
-            if (profileState.nameError != null)
-
-        Spacer(Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = profileState.email,
-            onValueChange = authViewModel::onProfileEmailChange,
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
-        )
-            if (profileState.emailError != null)
-
-        Spacer(Modifier.height(24.dp))
-
+        Spacer(Modifier.height(16.dp))
         Button(
             onClick = authViewModel::saveProfile,
             enabled = profileState.canSubmit && !profileState.isSubmitting,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Guardar Cambios")
+            Text("Guardar Cambios de Perfil")
+        }
+
+        Divider(modifier = Modifier.padding(vertical = 24.dp))
+        Text("Cambiar Contraseña", style = MaterialTheme.typography.headlineSmall)
+        Spacer(Modifier.height(16.dp))
+
+        PasswordChangeForm(
+            profileState = profileState,
+            onCurrentPasswordChange = authViewModel::onCurrentPasswordChange,
+            onNewPasswordChange = authViewModel::onNewPasswordChange,
+            onConfirmNewPasswordChange = authViewModel::onConfirmNewPasswordChange
+        )
+        Spacer(Modifier.height(24.dp))
+        Button(
+            onClick = authViewModel::changePassword,
+            enabled = profileState.canChangePassword && !profileState.isChangingPassword,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            if (profileState.isChangingPassword) {
+                CircularProgressIndicator(modifier = Modifier.size(ButtonDefaults.IconSize))
+            } else {
+                Text("Cambiar Contraseña")
+            }
         }
     }
 }

@@ -13,9 +13,11 @@ import androidx.compose.foundation.verticalScroll
 import com.example.forgetmenot.ui.components.ArticleForm
 import androidx.compose.runtime.*
 import coil.compose.AsyncImage
+import com.example.forgetmenot.viewmodel.ArticleViewModel
 
 @Composable
 fun AddArticleScreen(
+    articleViewModel: ArticleViewModel,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     onGoCamera: () -> Unit,
@@ -23,22 +25,37 @@ fun AddArticleScreen(
     onClearNewImage: () -> Unit
 ) {
 
+    val state by articleViewModel.formState.collectAsState()
+
+    val name = remember { mutableStateOf(state.name) }
+    val description = remember { mutableStateOf(state.description) }
+    val category = remember { mutableStateOf(state.category) }
+    val price = remember { mutableStateOf(state.price) }
+    val condition = remember { mutableStateOf(state.condition) }
+    val purchaseDate = remember { mutableStateOf(state.purchaseDate) }
+    val location = remember { mutableStateOf(state.location) }
+    val tags = remember { mutableStateOf(state.tags) }
     var imageUri by remember { mutableStateOf<String?>(null) }
-    val name = remember { mutableStateOf("") }
-    val description = remember { mutableStateOf("") }
-    val category = remember { mutableStateOf("") }
-    val price = remember { mutableStateOf("") }
-    val condition = remember { mutableStateOf("") }
-    val purchaseDate = remember { mutableStateOf("") }
-    val location = remember { mutableStateOf("") }
-    val tags = remember { mutableStateOf("") }
+
+    LaunchedEffect(state) {
+        name.value = state.name
+        description.value = state.description
+        category.value = state.category
+        price.value = state.price
+        condition.value = state.condition
+        purchaseDate.value = state.purchaseDate
+        location.value = state.location
+        tags.value = state.tags
+        imageUri = state.imageUrl
+    }
 
     LaunchedEffect(newImageUri) {
         if (newImageUri != null) {
-            imageUri = newImageUri
+            articleViewModel.setImageUrl(newImageUri)
             onClearNewImage()
         }
     }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -59,6 +76,15 @@ fun AddArticleScreen(
             tags = tags
         )
 
+        LaunchedEffect(name.value) { articleViewModel.onNameChange(name.value) }
+        LaunchedEffect(description.value) { articleViewModel.onDescriptionChange(description.value) }
+        LaunchedEffect(category.value) { articleViewModel.onCategoryChange(category.value) }
+        LaunchedEffect(price.value) { articleViewModel.onPriceChange(price.value) }
+        LaunchedEffect(condition.value) { articleViewModel.onConditionChange(condition.value) }
+        LaunchedEffect(purchaseDate.value) { articleViewModel.onPurchaseDateChange(purchaseDate.value) }
+        LaunchedEffect(location.value) { articleViewModel.onLocationChange(location.value) }
+        LaunchedEffect(tags.value) { articleViewModel.onTagsChange(tags.value) }
+
         Spacer(Modifier.height(16.dp))
 
         if (imageUri != null) {
@@ -74,7 +100,14 @@ fun AddArticleScreen(
         }
 
         Spacer(Modifier.height(24.dp))
-        Button(onClick = { /* Guardar nuevo artículo */ }, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = {
+                articleViewModel.addArticle()
+                onNavigateBack()
+            },
+            enabled = state.canSubmit,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("Guardar Artículo")
         }
     }

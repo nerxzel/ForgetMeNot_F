@@ -53,7 +53,7 @@ fun ArticleCard(item: Article, modifier: Modifier = Modifier, onClick: () -> Uni
                 modifier = Modifier
                     .size(100.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant), // Color de tema
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
                 if (!item.imageUrl.isNullOrEmpty()) {
@@ -70,7 +70,7 @@ fun ArticleCard(item: Article, modifier: Modifier = Modifier, onClick: () -> Uni
                         painter = painterResource(id = R.drawable.flower),
                         contentDescription = "Sin imagen",
                         modifier = Modifier.size(48.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant // Color de tema
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -133,11 +133,10 @@ fun ArticleCard(item: Article, modifier: Modifier = Modifier, onClick: () -> Uni
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     item.tags.forEach { tagName ->
-                        // 3. COLOR DE TEMA
                         TagChip(
                             text = tagName,
-                            backgroundColor = MaterialTheme.colorScheme.surfaceVariant, // Color de tema
-                            textColor = MaterialTheme.colorScheme.onSurfaceVariant // Color de tema
+                            backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
+                            textColor = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }

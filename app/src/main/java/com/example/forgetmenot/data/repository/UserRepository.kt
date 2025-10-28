@@ -50,4 +50,23 @@ class UserRepository (
         }
     }
 
+    suspend fun verifyPassword(userId: Long, currentPasswordToCheck: String): Result<Unit> {
+        val user = userDao.getById(userId)
+        return if (user != null && user.password == currentPasswordToCheck) {
+            Result.success(Unit)
+        } else {
+            Result.failure(IllegalArgumentException("Contraseña actual incorrecta"))
+        }
+    }
+
+
+    suspend fun updatePassword(userId: Long, newPassword: String): Result<Unit> {
+        return try {
+            userDao.updatePassword(userId, newPassword)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
 }

@@ -12,28 +12,27 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import com.example.forgetmenot.sampleItems
 import com.example.forgetmenot.ui.screen.DetailsScreen
-
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-
 import com.example.forgetmenot.ui.components.AppTopBar
 import com.example.forgetmenot.ui.screen.HomeScreen
 import com.example.forgetmenot.ui.screen.LoginScreenVm
 import com.example.forgetmenot.ui.screen.RegisterScreenVm
 import com.example.forgetmenot.viewmodel.AuthViewModel
-import com.example.forgetmenot.ui.screen.DetailsScreen
 import com.example.forgetmenot.ui.screen.ProfileScreen
 import com.example.forgetmenot.ui.screen.AddArticleScreen
 import com.example.forgetmenot.ui.camera.CameraScreen
+import com.example.forgetmenot.viewmodel.ArticleViewModel
 
 @Composable
 fun AppNavGraph(navController: NavHostController,
-                authViewModel: AuthViewModel) {
+                authViewModel: AuthViewModel,
+                articleViewModel: ArticleViewModel) {
     val goHome: () -> Unit    = { navController.navigate(Route.Home.path) }
     val goLogin: () -> Unit   = { navController.navigate(Route.Login.path) }
     val goRegister: () -> Unit = { navController.navigate(Route.Register.path) }
@@ -46,32 +45,28 @@ fun AppNavGraph(navController: NavHostController,
             }
             launchSingleTop = true } }
 
-    val onArticleClick: (Int) -> Unit = { articleId ->
+    val onArticleClick: (Long) -> Unit = { articleId ->
         navController.navigate("details/$articleId")
     }
 
     val onAddItemClick: () -> Unit = {
+        articleViewModel.clearForm()
         navController.navigate(Route.AddArticle.path)
     }
-
     val onNavigateBack: () -> Unit = {
         navController.popBackStack()
     }
-
     val onGoCamera: () -> Unit = {
         navController.navigate(Route.Camera.path)
     }
 
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
     val showScaffold = when (currentRoute) {
         Route.Home.path -> true
         Route.Profile.path -> true
         else -> false
     }
-
         Scaffold(
             topBar = {
                 if (showScaffold) {
@@ -97,6 +92,7 @@ fun AppNavGraph(navController: NavHostController,
             ) {
                 composable(Route.Home.path) {
                     HomeScreen(
+                        articleViewModel = articleViewModel,
                         onArticleClick = onArticleClick,
                         onAddItemClick = onAddItemClick,
                         modifier = Modifier.padding(innerPadding)
@@ -121,18 +117,19 @@ fun AppNavGraph(navController: NavHostController,
 
                 composable(
                     route = Route.Details.path,
-                    arguments = listOf(navArgument("articleId") { type = NavType.IntType })
+                    arguments = listOf(navArgument("articleId") { type = NavType.LongType })
                 ) { backStackEntry ->
 
-                    val articleId = backStackEntry.arguments?.getInt("articleId")
-                    val article = sampleItems.find { it.id == articleId }
+                    val articleId = backStackEntry.arguments?.getLong("articleId") ?: 0L
+                    val article = articleViewModel.getArticleById(articleId)
 
                     val newImageUri = backStackEntry.savedStateHandle
                         .getLiveData<String>("newImageUri")
                         .observeAsState()
 
                     DetailsScreen(
-                        article = article,
+                        articleId = articleId,
+                        articleViewModel = articleViewModel,
                         onNavigateBack = onNavigateBack,
                         modifier = Modifier.padding(innerPadding),
                         onGoCamera = onGoCamera,
@@ -149,7 +146,12 @@ fun AppNavGraph(navController: NavHostController,
                         .getLiveData<String>("newImageUri")
                         .observeAsState()
 
+                    LaunchedEffect(Unit) {
+                        articleViewModel.clearForm()
+                    }
+
                     AddArticleScreen(
+                        articleViewModel = articleViewModel,
                         onNavigateBack = onNavigateBack,
                         modifier = Modifier.padding(innerPadding),
                         onGoCamera = onGoCamera,

@@ -11,21 +11,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-
 import androidx.compose.ui.Modifier
-
 import androidx.compose.ui.unit.dp
-import com.example.forgetmenot.sampleItems
 import androidx.compose.foundation.lazy.items
 import com.example.forgetmenot.ui.components.ArticleCard
+import com.example.forgetmenot.viewmodel.ArticleViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 @Composable
 fun HomeScreen(
-    onArticleClick: (Int) -> Unit,
+    articleViewModel: ArticleViewModel,
+    onArticleClick: (Long) -> Unit,
     onAddItemClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val bg = MaterialTheme.colorScheme.background
+
+    val articles by articleViewModel.articles.collectAsState()
 
     LazyColumn(
         modifier = modifier
@@ -39,14 +42,14 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "Mis artículos (${sampleItems.size})")
+                    Text(text = "Mis artículos (${articles.size})")
                 }
             }
 
-            items(sampleItems) { item ->
-                ArticleCard(item = item, onClick = {
-                    onArticleClick(item.id)
-                })
+        items(articles, key = { it.id }) { item ->
+            ArticleCard(
+                item = item,
+                onClick = { onArticleClick(item.id) })
             }
 
             }
