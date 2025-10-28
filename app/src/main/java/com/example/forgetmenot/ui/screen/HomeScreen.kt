@@ -1,6 +1,12 @@
 package com.example.forgetmenot.ui.screen
 
 
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -18,6 +24,8 @@ import com.example.forgetmenot.ui.components.ArticleCard
 import com.example.forgetmenot.viewmodel.ArticleViewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.example.forgetmenot.ui.theme.LightBlueGray
+import com.example.forgetmenot.ui.theme.reddish
 
 @Composable
 fun HomeScreen(
@@ -30,9 +38,20 @@ fun HomeScreen(
 
     val articles by articleViewModel.articles.collectAsState()
 
+    val transition = rememberInfiniteTransition()
+    val bgColorTransition by transition.animateColor(
+        initialValue = LightBlueGray,
+        targetValue = reddish,
+        animationSpec = infiniteRepeatable(
+            animation = tween ( 60000 ),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
+            .background(bgColorTransition)
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(vertical = 16.dp)

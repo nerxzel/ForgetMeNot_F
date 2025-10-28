@@ -11,9 +11,18 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.forgetmenot.data.local.model.Article
 import android.net.Uri
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.getValue
 import com.example.forgetmenot.ui.components.ArticleForm
+import com.example.forgetmenot.ui.theme.LightBlueGray
+import com.example.forgetmenot.ui.theme.reddish
 import com.example.forgetmenot.viewmodel.ArticleViewModel
 
 @Composable
@@ -41,6 +50,16 @@ fun DetailsScreen(
     val location = remember { mutableStateOf("") }
     val tags = remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<String?>(null) }
+
+    val transition = rememberInfiniteTransition()
+    val bgColorTransition by transition.animateColor(
+        initialValue = LightBlueGray,
+        targetValue = reddish,
+        animationSpec = infiniteRepeatable(
+            animation = tween ( 60000 ),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
 
     LaunchedEffect(article) {
         article?.let {
@@ -82,6 +101,7 @@ fun DetailsScreen(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
+            .background(bgColorTransition)
             .verticalScroll(rememberScrollState())
     ) {
         Text("Editar Artículo", style = MaterialTheme.typography.headlineMedium)

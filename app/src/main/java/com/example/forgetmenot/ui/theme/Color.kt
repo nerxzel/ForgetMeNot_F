@@ -28,3 +28,5 @@ val LightInfoBlue = Color(0xFFE6F0FF) // Color de la tarjeta de "Demo"
 //Para animacrion fff4f4
 val reddish = Color(0xFFFFF4F4)
 
+
+

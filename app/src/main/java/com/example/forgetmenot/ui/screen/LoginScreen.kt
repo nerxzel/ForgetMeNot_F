@@ -75,11 +75,11 @@ private fun LoginScreen(
     val bg = MaterialTheme.colorScheme.background
 
     val transition = rememberInfiniteTransition()
-    val color by transition.animateColor(
+    val bgColorTransition by transition.animateColor(
         initialValue = LightBlueGray,
         targetValue = reddish,
         animationSpec = infiniteRepeatable(
-            animation = tween ( 1500 ),
+            animation = tween ( 60000 ),
             repeatMode = RepeatMode.Reverse
         )
     )
@@ -98,7 +98,7 @@ private fun LoginScreen(
         modifier = Modifier
             .fillMaxSize()
             //.rotate(rotation) alfo siendo un genio
-            .background(LightBlueGray),
+            .background(bgColorTransition),
         contentAlignment = Alignment.Center
     ) {
         Column(
