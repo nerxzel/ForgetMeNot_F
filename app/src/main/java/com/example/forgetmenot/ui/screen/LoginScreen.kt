@@ -87,7 +87,7 @@ private fun LoginScreen(
         initialValue = 0f,
         targetValue = 360f,
         animationSpec = infiniteRepeatable(
-            animation = tween (1500,
+            animation = tween (20000,
                 easing = LinearEasing
             ),
             repeatMode = RepeatMode.Restart
@@ -97,7 +97,7 @@ private fun LoginScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .rotate(rotation)
+            //.rotate(rotation) alfo siendo un genio
             .background(LightBlueGray),
         contentAlignment = Alignment.Center
     ) {
