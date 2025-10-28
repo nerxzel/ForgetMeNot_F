@@ -68,8 +68,8 @@ fun HomeScreen(
         items(articles, key = { it.id }) { item ->
             ArticleCard(
                 item = item,
-                onClick = { onArticleClick(item.id) })
-            }
-
-            }
+                onClick = { onArticleClick(item.id) }
+            )
+        }
+    }
 }

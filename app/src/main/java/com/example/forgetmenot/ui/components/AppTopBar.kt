@@ -45,8 +45,8 @@ fun AppTopBar(
                 overflow = TextOverflow.Ellipsis
             )
         },
-        navigationIcon = { /*El ícono que se posiciona a la izquierda*/
-            IconButton(onClick = {/*¿Podría cambiarse por una foto de perfil?*/ }) {
+        navigationIcon = {
+            IconButton(onClick = { }) {
                 Box(
                     modifier = Modifier.Companion
                         .size(40.dp)
@@ -66,7 +66,7 @@ fun AppTopBar(
             }
         },
 
-        actions = { /*Esto es para los iconos que irán a la derecha*/
+        actions = {
             IconButton(onClick = onGoProfile) {
                 Box(
                     modifier = Modifier

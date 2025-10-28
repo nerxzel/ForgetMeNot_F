@@ -103,7 +103,7 @@ private fun ContentWithPermissionHandling(
                         context = context,
                         callbackExecutor = imageCaptureCallbackExecutor,
                         onImageCaptured = onPhotoTaken,
-                        onError = { /* Error */ },
+                        onError = {/*tendremos que poner algo aca? Pendiente?? En otra edicion?*/  },
                     )
                 },
             )

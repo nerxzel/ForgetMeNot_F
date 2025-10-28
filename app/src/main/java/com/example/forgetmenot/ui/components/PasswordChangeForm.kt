@@ -74,7 +74,6 @@ fun PasswordChangeForm(
     }
 }
 
-// Helper Composable for visibility toggle
 @Composable
 private fun PasswordVisibilityToggle(shown: Boolean, onToggle: (Boolean) -> Unit) {
     IconButton(onClick = { onToggle(!shown) }) {

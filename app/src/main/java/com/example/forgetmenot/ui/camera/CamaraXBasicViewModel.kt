@@ -30,13 +30,6 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 
-/**
- * ViewModel for the CameraX Basic sample.
- *
- * This ViewModel handles the camera setup, preview display, tap to focus, and photo capture
- * functionality using CameraX. It exposes a [StateFlow] for the camera preview [SurfaceRequest]
- * to be used in a composable.
- */
 class CameraXBasicViewModel : ViewModel() {
     private val _surfaceRequest = MutableStateFlow<SurfaceRequest?>(null)
     val surfaceRequest: StateFlow<SurfaceRequest?> = _surfaceRequest
@@ -44,10 +37,6 @@ class CameraXBasicViewModel : ViewModel() {
 
     private var cameraControl: CameraControl? = null
 
-    /**
-     * CameraX Preview use case configuration.
-     * Sets up a surface provider that updates the [_surfaceRequest] StateFlow.
-     */
     private val previewUseCase = Preview.Builder().build().apply {
         setSurfaceProvider { newSurfaceRequest ->
             _surfaceRequest.update { newSurfaceRequest }
@@ -58,34 +47,23 @@ class CameraXBasicViewModel : ViewModel() {
         }
     }
 
-    /**
-     * CameraX ImageCapture use case configuration.
-     */
     private val imageCaptureUseCase = ImageCapture.Builder().build()
 
-    /**
-     * Binds the camera to the lifecycle owner and selected use cases.
-     *
-     * @param appContext The application context.
-     * @param lifecycleOwner The lifecycle owner to which the camera will be bound.
-     */
     suspend fun bindToCamera(appContext: Context, lifecycleOwner: LifecycleOwner) {
         val processCameraProvider = ProcessCameraProvider.awaitInstance(appContext)
         val useCaseGroup = UseCaseGroup.Builder()
-            .addUseCase(previewUseCase)      // Add Preview UseCase
-            .addUseCase(imageCaptureUseCase) // Add Image Capture UseCase
+            .addUseCase(previewUseCase)
+            .addUseCase(imageCaptureUseCase)
             .build()
 
         val camera = processCameraProvider.bindToLifecycle(
             lifecycleOwner = lifecycleOwner,
-            cameraSelector = DEFAULT_BACK_CAMERA, // Default to the back camera
+            cameraSelector = DEFAULT_BACK_CAMERA,
             useCaseGroup = useCaseGroup,
         )
 
-        // Assign camera control for tap-to-focus functionality.
         cameraControl = camera.cameraControl
 
-        // Cancellation signals we're done with the camera
         try {
             awaitCancellation()
         } finally {
@@ -94,11 +72,6 @@ class CameraXBasicViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Initiates tap-to-focus at the given coordinates on the preview surface.
-     *
-     * @param coordinates The coordinates of the tap relative to the preview surface.
-     */
     fun tapToFocus(coordinates: Offset) {
         val point = surfaceMeteringPointFactory?.createPoint(coordinates.x, coordinates.y)
         if (point != null) {
@@ -107,14 +80,6 @@ class CameraXBasicViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Takes a photo and saves it to external storage.
-     *
-     * @param context The application context.
-     * @param callbackExecutor The executor to run the image capture callbacks on.
-     * @param onImageCaptured Callback invoked when the image is successfully captured and saved.
-     * @param onError Callback invoked if an error occurs during image capture.
-     */
     fun takePhoto(
         context: Context,
         callbackExecutor: ExecutorService,
@@ -149,13 +114,6 @@ class CameraXBasicViewModel : ViewModel() {
     }
 }
 
-/**
- * Callback for handling image capture results.
- *
- * @param context The application context.
- * @param onImageCaptured Callback invoked when the image is successfully captured and saved.
- * @param onError Callback invoked if an error occurs during image capture.
- */
 private class ImageSavedCallback(
     private val context: Context,
     private val onImageCaptured: (Uri?) -> Unit,

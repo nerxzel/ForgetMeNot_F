@@ -99,9 +99,9 @@ fun DetailsScreen(
     }
 
     Box(
-        modifier = modifier // Apply padding from Scaffold first
+        modifier = modifier
             .fillMaxSize()
-            .background(bgColorTransition) // Animated background here
+            .background(bgColorTransition)
     ) {
 
         Column(
@@ -118,7 +118,7 @@ fun DetailsScreen(
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // White background
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
             ArticleForm(
