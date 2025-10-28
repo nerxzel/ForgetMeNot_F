@@ -18,6 +18,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.getValue
 import com.example.forgetmenot.ui.components.ArticleForm
@@ -97,60 +98,106 @@ fun DetailsScreen(
         return
     }
 
-    Column(
-        modifier = modifier
+    Box(
+        modifier = modifier // Apply padding from Scaffold first
             .fillMaxSize()
-            .padding(16.dp)
-            .background(bgColorTransition)
-            .verticalScroll(rememberScrollState())
+            .background(bgColorTransition) // Animated background here
     ) {
-        Text("Editar Artículo", style = MaterialTheme.typography.headlineMedium)
-        Spacer(Modifier.height(16.dp))
 
-        ArticleForm(
-            name = name,
-            description = description,
-            category = category,
-            price = price,
-            condition = condition,
-            purchaseDate = purchaseDate,
-            location = location,
-            tags = tags
-        )
-
-        LaunchedEffect(name.value) { if (name.value != state.name) articleViewModel.onNameChange(name.value) }
-        LaunchedEffect(description.value) { if (description.value != state.description) articleViewModel.onDescriptionChange(description.value) }
-        LaunchedEffect(category.value) { if (category.value != state.category) articleViewModel.onCategoryChange(category.value) }
-        LaunchedEffect(price.value) { if (price.value != state.price) articleViewModel.onPriceChange(price.value) }
-        LaunchedEffect(condition.value) { if (condition.value != state.condition) articleViewModel.onConditionChange(condition.value) }
-        LaunchedEffect(purchaseDate.value) { if (purchaseDate.value != state.purchaseDate) articleViewModel.onPurchaseDateChange(purchaseDate.value) }
-        LaunchedEffect(location.value) { if (location.value != state.location) articleViewModel.onLocationChange(location.value) }
-        LaunchedEffect(tags.value) { if (tags.value != state.tags) articleViewModel.onTagsChange(tags.value) }
-
-        Spacer(Modifier.height(16.dp))
-
-        if (imageUri != null) {
-            AsyncImage(
-                model = Uri.parse(imageUri!!),
-                contentDescription = "Foto del artículo",
-                modifier = Modifier.size(100.dp)
-            )
-        }
-        IconButton(onClick = onGoCamera) {
-            Icon(Icons.Default.CameraAlt, "Cambiar Foto")
-        }
-
-        Spacer(Modifier.height(24.dp))
-
-        Button(
-            onClick = {
-                articleViewModel.updateArticle(articleId)
-                onNavigateBack()
-            },
-            enabled = state.canSubmit,
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            Text("Guardar Cambios")
+            Text("Editar Artículo", style = MaterialTheme.typography.headlineMedium)
+            Spacer(Modifier.height(16.dp))
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // White background
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+            ArticleForm(
+                name = name,
+                description = description,
+                category = category,
+                price = price,
+                condition = condition,
+                purchaseDate = purchaseDate,
+                location = location,
+                tags = tags
+            )}
+
+            LaunchedEffect(name.value) {
+                if (name.value != state.name) articleViewModel.onNameChange(
+                    name.value
+                )
+            }
+            LaunchedEffect(description.value) {
+                if (description.value != state.description) articleViewModel.onDescriptionChange(
+                    description.value
+                )
+            }
+            LaunchedEffect(category.value) {
+                if (category.value != state.category) articleViewModel.onCategoryChange(
+                    category.value
+                )
+            }
+            LaunchedEffect(price.value) {
+                if (price.value != state.price) articleViewModel.onPriceChange(
+                    price.value
+                )
+            }
+            LaunchedEffect(condition.value) {
+                if (condition.value != state.condition) articleViewModel.onConditionChange(
+                    condition.value
+                )
+            }
+            LaunchedEffect(purchaseDate.value) {
+                if (purchaseDate.value != state.purchaseDate) articleViewModel.onPurchaseDateChange(
+                    purchaseDate.value
+                )
+            }
+            LaunchedEffect(location.value) {
+                if (location.value != state.location) articleViewModel.onLocationChange(
+                    location.value
+                )
+            }
+            LaunchedEffect(tags.value) {
+                if (tags.value != state.tags) articleViewModel.onTagsChange(
+                    tags.value
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            if (imageUri != null) {
+                AsyncImage(
+                    model = Uri.parse(imageUri!!),
+                    contentDescription = "Foto del artículo",
+                    modifier = Modifier.size(100.dp)
+                )
+            }
+            IconButton(onClick = onGoCamera) {
+                Icon(Icons.Default.CameraAlt, "Cambiar Foto")
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Button(
+                onClick = {
+                    articleViewModel.updateArticle(articleId)
+                    onNavigateBack()
+                },
+                enabled = state.canSubmit,
+                modifier = Modifier.fillMaxWidth().padding(16.dp)
+            ) {
+                Text("Guardar Cambios")
+            }}
         }
     }
 }
