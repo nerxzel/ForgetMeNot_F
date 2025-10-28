@@ -1,10 +1,12 @@
 package com.example.forgetmenot.ui.screen
 
 import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -80,11 +83,22 @@ private fun LoginScreen(
             repeatMode = RepeatMode.Reverse
         )
     )
+    val rotation by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween (1500,
+                easing = LinearEasing
+            ),
+            repeatMode = RepeatMode.Restart
+        )
+    )
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color),
+            .rotate(rotation)
+            .background(LightBlueGray),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -96,10 +110,11 @@ private fun LoginScreen(
         ) {
 
             Image(
-                painter = painterResource(id = R.drawable.fmn),
+                painter = painterResource(id = R.drawable.logoflower),
                 contentDescription = "Imagen de perfil circular",
                 modifier = Modifier
                     .size(150.dp)
+                    .rotate(rotation)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
