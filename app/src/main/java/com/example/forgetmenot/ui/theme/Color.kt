@@ -25,3 +25,6 @@ val LightBlueGray = Color(0xFFF1F4FF) // Color de fondo principal
 val DarkNavy = Color(0xFF1A1A2E)      // Color del botón oscuro
 val LightInfoBlue = Color(0xFFE6F0FF) // Color de la tarjeta de "Demo"
 
+//Para animacrion fff4f4
+val reddish = Color(0xFFFFF4F4)
+

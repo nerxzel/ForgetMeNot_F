@@ -1,5 +1,10 @@
 package com.example.forgetmenot.ui.screen
 
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,6 +22,7 @@ import com.example.forgetmenot.viewmodel.AuthViewModel
 import com.example.forgetmenot.R
 import com.example.forgetmenot.ui.components.LoginForm
 import com.example.forgetmenot.ui.theme.LightBlueGray
+import com.example.forgetmenot.ui.theme.reddish
 
 @Composable
 fun LoginScreenVm(
@@ -65,10 +71,20 @@ private fun LoginScreen(
 ) {
     val bg = MaterialTheme.colorScheme.background
 
+    val transition = rememberInfiniteTransition()
+    val color by transition.animateColor(
+        initialValue = LightBlueGray,
+        targetValue = reddish,
+        animationSpec = infiniteRepeatable(
+            animation = tween ( 1500 ),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(LightBlueGray),
+            .background(color),
         contentAlignment = Alignment.Center
     ) {
         Column(
