@@ -1,9 +1,15 @@
 package com.example.forgetmenot.ui.screen
 
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -11,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.forgetmenot.viewmodel.AuthViewModel
 import com.example.forgetmenot.ui.components.RegisterForm
 import com.example.forgetmenot.ui.theme.LightBlueGray
+import com.example.forgetmenot.ui.theme.reddish
 
 @Composable
 fun RegisterScreenVm(
@@ -71,10 +78,20 @@ private fun RegisterScreen(
 ) {
     val bg = MaterialTheme.colorScheme.background
 
+    val transition = rememberInfiniteTransition()
+    val bgColorTransition by transition.animateColor(
+        initialValue = LightBlueGray,
+        targetValue = reddish,
+        animationSpec = infiniteRepeatable(
+            animation = tween ( 60000 ),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(LightBlueGray)
+            .background(bgColorTransition)
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {

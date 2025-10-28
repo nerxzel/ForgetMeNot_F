@@ -26,9 +26,10 @@ data class ArticleFormState(
 
 
     val nameError: String? = null,
-    val locationError: String? = null, // Only these are mandatory
+    val locationError: String? = null,
 
     val canSubmit: Boolean = false
+
 )
 
 class ArticleViewModel(private val repository: ArticleRepository) : ViewModel() {

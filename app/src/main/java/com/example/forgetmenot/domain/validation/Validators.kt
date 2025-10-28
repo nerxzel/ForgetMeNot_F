@@ -30,12 +30,6 @@ fun validateConfirm(pass: String, confirm: String): String? {
     return if (pass != confirm) "Las contraseñas no coinciden" else null
 }
 
-/**
- * Checks if a required text field is not empty.
- * @param value The text input.
- * @param fieldName The name of the field (e.g., "Nombre", "Ubicación") for the error message.
- * @return An error message string if blank, or null if valid.
- */
 fun validateNotBlank(value: String, fieldName: String): String? {
     if (value.isBlank()) return "El campo '$fieldName' es obligatorio"
     return null
