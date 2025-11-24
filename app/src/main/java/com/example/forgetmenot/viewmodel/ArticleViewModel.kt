@@ -40,14 +40,14 @@ class ArticleViewModel(private val repository: ArticleRepository) : ViewModel() 
     private val _formState = MutableStateFlow(ArticleFormState())
     val formState: StateFlow<ArticleFormState> = _formState.asStateFlow()
 
-    init {
-        loadAllArticles()
-    }
+    private var currentUserEmail: String = ""
 
-    fun loadAllArticles() {
+    // Removed init block to avoid loading without email
+
+    fun loadAllArticles(email: String) {
+        currentUserEmail = email
         viewModelScope.launch {
-
-            _articles.value = repository.getAllArticles()
+            _articles.value = repository.getAllArticles(email)
         }
     }
 
@@ -108,6 +108,7 @@ class ArticleViewModel(private val repository: ArticleRepository) : ViewModel() 
 
     fun addArticle() {
         if (!_formState.value.canSubmit) return
+        if (currentUserEmail.isBlank()) return // Should handle error or ensure email is set
 
         viewModelScope.launch {
             val s = _formState.value
@@ -124,14 +125,15 @@ class ArticleViewModel(private val repository: ArticleRepository) : ViewModel() 
                 tags = s.tags.split(',').map { it.trim() }.filter { it.isNotEmpty() }
             )
 
-            repository.addArticle(newArticle)
+            repository.addArticle(newArticle, currentUserEmail)
 
-            loadAllArticles()
+            loadAllArticles(currentUserEmail)
         }
     }
 
     fun updateArticle(articleId: Long) {
         if (!_formState.value.canSubmit) return
+        if (currentUserEmail.isBlank()) return
 
         viewModelScope.launch {
             val s = _formState.value
@@ -147,8 +149,8 @@ class ArticleViewModel(private val repository: ArticleRepository) : ViewModel() 
                 imageUrl = s.imageUrl,
                 tags = s.tags.split(',').map { it.trim() }.filter { it.isNotEmpty() }
             )
-            repository.updateArticle(updatedArticle)
-            loadAllArticles()
+            repository.updateArticle(updatedArticle, currentUserEmail)
+            loadAllArticles(currentUserEmail)
         }
     }
 
@@ -159,7 +161,7 @@ class ArticleViewModel(private val repository: ArticleRepository) : ViewModel() 
     fun deleteArticle(article: Article) {
         viewModelScope.launch {
             repository.deleteArticle(article.id)
-            loadAllArticles()
+            loadAllArticles(currentUserEmail)
         }
     }
 }

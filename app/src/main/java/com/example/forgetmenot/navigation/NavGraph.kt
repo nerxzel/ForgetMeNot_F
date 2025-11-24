@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -91,8 +92,14 @@ fun AppNavGraph(navController: NavHostController,
                 modifier = Modifier
             ) {
                 composable(Route.Home.path) {
+                    val loginState by authViewModel.login.collectAsState()
+                    val profileState by authViewModel.profile.collectAsState()
+                    // Use profile email if available (session restored), otherwise login email
+                    val userEmail = if (profileState.email.isNotBlank()) profileState.email else loginState.email
+
                     HomeScreen(
                         articleViewModel = articleViewModel,
+                        email = userEmail,
                         onArticleClick = onArticleClick,
                         onAddItemClick = onAddItemClick,
                         modifier = Modifier.padding(innerPadding)

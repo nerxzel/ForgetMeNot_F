@@ -30,10 +30,16 @@ import com.example.forgetmenot.ui.theme.reddish
 @Composable
 fun HomeScreen(
     articleViewModel: ArticleViewModel,
+    email: String,
     onArticleClick: (Long) -> Unit,
     onAddItemClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LaunchedEffect(email) {
+        if (email.isNotBlank()) {
+            articleViewModel.loadAllArticles(email)
+        }
+    }
     val bg = MaterialTheme.colorScheme.background
 
     val articles by articleViewModel.articles.collectAsState()
