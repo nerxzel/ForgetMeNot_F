@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import com.example.forgetmenot.data.local.database.AppDatabase
 import com.example.forgetmenot.data.repository.UserRepository
 import com.example.forgetmenot.navigation.AppNavGraph
 import com.example.forgetmenot.viewmodel.AuthViewModel
@@ -36,7 +35,6 @@ class MainActivity : ComponentActivity() {
 fun AppRoot() {
 
     val context = LocalContext.current.applicationContext
-    val db = AppDatabase.getInstance(context)
     val repository = remember { UserRepository() }
     val authViewModel: AuthViewModel = viewModel (
         factory = AuthViewModelFactory(repository)
