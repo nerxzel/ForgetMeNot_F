@@ -7,11 +7,12 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.DELETE
+import retrofit2.http.Query
 
 interface UserService {
 
-    @GET("user/{email}")
-    suspend fun getUserByEmail(@Path("email") email: String): UserDto
+    @GET("user/email")
+    suspend fun getUserByEmail(@Query("email") email: String): UserDto
 
     @POST("user")
     suspend fun addUser(@Body user: UserDto): UserDto

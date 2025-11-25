@@ -18,7 +18,7 @@ class UserRepository (
         else{
             Result.failure(IllegalArgumentException("Credenciales inválidas"))
         }*/
-        return Result.success(UserEntity(0, "H", "H", "h"))
+        return Result.success(UserEntity(0L, "H", "H", "h"))
     }
 
     suspend fun register(name:String, email: String, pass: String): Result<Long>{
