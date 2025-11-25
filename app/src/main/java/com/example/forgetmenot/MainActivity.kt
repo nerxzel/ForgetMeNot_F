@@ -37,14 +37,12 @@ fun AppRoot() {
 
     val context = LocalContext.current.applicationContext
     val db = AppDatabase.getInstance(context)
-    val dao = db.userDao()
-    val repository = UserRepository(dao)
+    val repository = remember { UserRepository() }
     val authViewModel: AuthViewModel = viewModel (
         factory = AuthViewModelFactory(repository)
     )
 
-    val articleDbHelper = remember { DatabaseHelper(context) }
-    val articleRepository = remember { ArticleRepository(articleDbHelper) }
+    val articleRepository = remember { ArticleRepository() }
     val articleViewModel: ArticleViewModel = viewModel(
         factory = ArticleViewModelFactory(articleRepository)
     )
