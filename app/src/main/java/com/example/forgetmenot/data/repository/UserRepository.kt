@@ -4,6 +4,8 @@ import com.example.forgetmenot.data.local.model.user.UserEntity
 import com.example.forgetmenot.data.remote.RetrofitInstance
 import com.example.forgetmenot.data.remote.UserService
 import com.example.forgetmenot.data.remote.dto.UserDto
+import com.example.forgetmenot.data.remote.dto.toDto
+import com.example.forgetmenot.data.remote.dto.toUser
 
 class UserRepository (
     //private val userDao: UserDao
@@ -11,6 +13,12 @@ class UserRepository (
 
     private val userService = RetrofitInstance.userService
     suspend fun login(email: String, pass: String): Result<UserEntity>{
+        val user = userService.getUserByEmail(email)
+        if(user.password == pass){
+            return Result.success(user.toUser())
+        }
+        return Result.failure(IllegalArgumentException("Credenciales invalidas"))
+
         /*val user = userDao.getByEmail(email)
         return if(user != null && user.password == pass){
             Result.success(user)
@@ -18,7 +26,6 @@ class UserRepository (
         else{
             Result.failure(IllegalArgumentException("Credenciales inválidas"))
         }*/
-        return Result.success(UserEntity(0L, "H", "H", "h"))
     }
 
     suspend fun register(name:String, email: String, pass: String): Result<Long>{
@@ -38,22 +45,28 @@ class UserRepository (
 
     suspend fun getUserByEmail(email: String): UserEntity? {
         //return userDao.getByEmail(email)
-        return UserEntity(0, "H", "H", "h")
+        return userService.getUserByEmail(email).toUser()
     }
 
     suspend fun getUserById(id: Long): UserEntity? {
         //return userDao.getById(id)
-        return UserEntity(0, "H", "H", "h")
+        return userService.getUserById(id).toUser()
     }
 
     suspend fun updateUser(user: UserEntity): Result<Unit> {
+        try {
+            userService.updateUser(user.id, user.toDto())
+            return Result.success(Unit)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
+
         /*return try {
             userDao.update(user)
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }*/
-        return Result.success(Unit)
     }
 
     suspend fun verifyPassword(userId: Long, currentPasswordToCheck: String): Result<Unit> {

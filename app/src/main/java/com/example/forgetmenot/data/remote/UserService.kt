@@ -14,6 +14,9 @@ interface UserService {
     @GET("user/email")
     suspend fun getUserByEmail(@Query("email") email: String): UserDto
 
+    @GET("user/{id}")
+    suspend fun getUserById(@Path("id") id: Long): UserDto
+
     @POST("user")
     suspend fun addUser(@Body user: UserDto): UserDto
 
