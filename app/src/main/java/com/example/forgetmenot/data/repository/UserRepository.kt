@@ -2,9 +2,12 @@ package com.example.forgetmenot.data.repository
 
 import com.example.forgetmenot.data.local.model.user.UserDao
 import com.example.forgetmenot.data.local.model.user.UserEntity
+import com.example.forgetmenot.data.remote.UserService
+import com.example.forgetmenot.data.remote.dto.UserDto
 
 class UserRepository (
-    private val userDao: UserDao
+    private val userDao: UserDao,
+    private val userService: UserService
 ){
     suspend fun login(email: String, pass: String): Result<UserEntity>{
         val user = userDao.getByEmail(email)
@@ -17,19 +20,17 @@ class UserRepository (
     }
 
     suspend fun register(name:String, email: String, pass: String): Result<Long>{
-        val exists = userDao.getByEmail(email) != null
-        if(exists){
-            return Result.failure(IllegalArgumentException("Correo en uso"))
-        }
-        else{
-            val id = userDao.insert(
-                UserEntity(
-                    name = name,
-                    email = email,
-                    password = pass
-                )
-            )
-            return Result.success(id)
+        try {
+            val user = userService.getUserByEmail(email)
+            if (user.email == email) {
+                return Result.failure(IllegalArgumentException("Correo en uso"))
+            } else{
+                userService.addUser(UserDto(0, name, email, pass))
+                return Result.success(1)
+            }
+        } catch (e: Exception){
+            e.printStackTrace()
+            return Result.failure(e)
         }
     }
 

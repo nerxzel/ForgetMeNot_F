@@ -9,11 +9,11 @@ import kotlinx.coroutines.withContext
 
 class ArticleRepository {
 
-    private val api = RetrofitInstance.api
+    private val articleService = RetrofitInstance.articleService
 
     suspend fun getAllArticles(email: String): List<Article> = withContext(Dispatchers.IO) {
         try {
-            api.getArticles(email).map { it.toArticle() }
+            articleService.getArticles(email).map { it.toArticle() }
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
@@ -22,7 +22,7 @@ class ArticleRepository {
 
     suspend fun addArticle(article: Article, email: String) = withContext(Dispatchers.IO) {
         try {
-            api.addArticle(article.toDto(email))
+            articleService.addArticle(article.toDto(email))
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -30,7 +30,7 @@ class ArticleRepository {
 
     suspend fun updateArticle(article: Article, email: String) = withContext(Dispatchers.IO) {
         try {
-            api.updateArticle(article.id, article.toDto(email))
+            articleService.updateArticle(article.id, article.toDto(email))
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -38,7 +38,7 @@ class ArticleRepository {
 
     suspend fun deleteArticle(articleId: Long) = withContext(Dispatchers.IO) {
         try {
-            api.deleteArticle(articleId)
+            articleService.deleteArticle(articleId)
         } catch (e: Exception) {
             e.printStackTrace()
         }
