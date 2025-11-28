@@ -7,7 +7,9 @@ import com.example.forgetmenot.data.remote.dto.toDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ArticleRepository {
+class ArticleRepository (
+
+) {
 
     private val articleService = RetrofitInstance.articleService
 

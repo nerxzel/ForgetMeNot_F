@@ -5,6 +5,7 @@ import com.example.forgetmenot.data.remote.RetrofitInstance
 import com.example.forgetmenot.data.remote.dto.UserDto
 import com.example.forgetmenot.data.remote.dto.toDto
 import com.example.forgetmenot.data.remote.dto.toUser
+import retrofit2.HttpException
 
 class UserRepository (
     //private val userDao: UserDao
@@ -40,6 +41,14 @@ class UserRepository (
                 userService.addUser(UserDto(0, name, email, pass))
                 return Result.success(1)
             }
+        }
+        catch (e: HttpException){
+            if (e.code() == 404){
+                userService.addUser(UserDto(0, name, email, pass))
+                return Result.success(1)
+            }
+            return Result.failure(e)
+
         } catch (e: Exception){
             e.printStackTrace()
             return Result.failure(e)
