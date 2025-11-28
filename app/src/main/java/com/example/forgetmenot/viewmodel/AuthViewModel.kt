@@ -279,8 +279,12 @@ class AuthViewModel(
             //val verifyResult = repository.verifyPassword(s.id, s.currentPassword)
 
             //if (verifyResult.isSuccess) {
-
-                val updateResult = repository.updatePassword(s.id, s.newPassword)
+            val existingUser = repository.getUserById(s.id)
+            if (existingUser == null) {
+                _profile.update { it.copy(isSubmitting = false, errorMsg = "Error: Usuario no encontrado") }
+                return@launch
+            }
+                val updateResult = repository.updatePassword(existingUser, s.newPassword)
                 _profile.update {
                     if (updateResult.isSuccess) {
                         it.copy(
