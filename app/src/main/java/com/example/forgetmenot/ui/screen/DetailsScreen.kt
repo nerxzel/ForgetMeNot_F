@@ -38,6 +38,7 @@ fun DetailsScreen(
 ) {
 
     val state by articleViewModel.formState.collectAsState()
+    var showDeleteDialog by remember { mutableStateOf(false) }
     val article by remember(articleId) {
         derivedStateOf { articleViewModel.getArticleById(articleId) }
     }
@@ -186,7 +187,7 @@ fun DetailsScreen(
                 Icon(Icons.Default.CameraAlt, "Cambiar Foto")
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(8.dp))
 
             Button(
                 onClick = {
@@ -194,10 +195,54 @@ fun DetailsScreen(
                     onNavigateBack()
                 },
                 enabled = state.canSubmit,
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
             ) {
                 Text("Guardar Cambios")
-            }}
+            }
+                Button(
+                    onClick = {
+                        showDeleteDialog = true
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
+                    ),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                ) {
+                    Text("Eliminar Artículo")
+                }
+            }
         }
+
+        Spacer(Modifier.height(4.dp))
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("¿Eliminar artículo?") },
+            text = { Text("Esta acción es permanente y no se puede deshacer. ¿Desea confirmar?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (article != null) {
+                            articleViewModel.deleteArticle(article!!)
+                            showDeleteDialog = false
+                            onNavigateBack()
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Eliminar")
+                }
+            },
+            dismissButton = {
+                OutlinedButton(onClick = { showDeleteDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 }
