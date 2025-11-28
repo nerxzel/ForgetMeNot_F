@@ -276,9 +276,9 @@ class AuthViewModel(
             delay(500)
 
 
-            val verifyResult = repository.verifyPassword(s.id, s.currentPassword)
+            //val verifyResult = repository.verifyPassword(s.id, s.currentPassword)
 
-            if (verifyResult.isSuccess) {
+            //if (verifyResult.isSuccess) {
 
                 val updateResult = repository.updatePassword(s.id, s.newPassword)
                 _profile.update {
@@ -291,9 +291,9 @@ class AuthViewModel(
                         it.copy(isChangingPassword = false, passwordChangeErrorMsg = "Error al guardar la nueva contraseña.")
                     }
                 }
-            } else {
-                _profile.update { it.copy(isChangingPassword = false, passwordChangeErrorMsg = verifyResult.exceptionOrNull()?.message ?: "La contraseña actual es incorrecta.") }
-            }
+            //} else {
+                //_profile.update { it.copy(isChangingPassword = false, passwordChangeErrorMsg = verifyResult.exceptionOrNull()?.message ?: "La contraseña actual es incorrecta.") }
+            //}
         }
     }
     fun clearPasswordChangeResult() {

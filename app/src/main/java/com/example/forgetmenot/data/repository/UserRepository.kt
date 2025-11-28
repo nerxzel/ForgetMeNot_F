@@ -2,7 +2,6 @@ package com.example.forgetmenot.data.repository
 
 import com.example.forgetmenot.data.local.model.user.UserEntity
 import com.example.forgetmenot.data.remote.RetrofitInstance
-import com.example.forgetmenot.data.remote.UserService
 import com.example.forgetmenot.data.remote.dto.UserDto
 import com.example.forgetmenot.data.remote.dto.toDto
 import com.example.forgetmenot.data.remote.dto.toUser
@@ -13,11 +12,15 @@ class UserRepository (
 
     private val userService = RetrofitInstance.userService
     suspend fun login(email: String, pass: String): Result<UserEntity>{
-        val user = userService.getUserByEmail(email)
-        if(user.password == pass){
-            return Result.success(user.toUser())
+        try {
+            val user = userService.getUserByEmail(email)
+            if(user.password == pass){
+                return Result.success(user.toUser())
+            }
+            return Result.failure(IllegalArgumentException("Credenciales incorrectas"))
+        } catch (e: Exception){
+            return Result.failure(IllegalArgumentException("Usuario no encontrado"))
         }
-        return Result.failure(IllegalArgumentException("Credenciales invalidas"))
 
         /*val user = userDao.getByEmail(email)
         return if(user != null && user.password == pass){
@@ -80,14 +83,21 @@ class UserRepository (
     }
 
 
-    suspend fun updatePassword(userId: Long, newPassword: String): Result<Unit> {
+    suspend fun updatePassword(user: UserEntity, newPassword: String): Result<Unit> {
+        val newUser = user.toDto()
+        newUser.password = newPassword
+        try {
+            userService.updateUser(newUser.id, newUser)
+            return Result.success(Unit)
+        } catch (e: Exception){
+            return Result.failure(e)
+        }
         /*return try {
             userDao.updatePassword(userId, newPassword)
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }*/
-        return Result.success(Unit)
     }
 
 }

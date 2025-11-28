@@ -6,7 +6,7 @@ data class UserDto(
     val id: Long,
     val name: String,
     val email: String,
-    val password: String
+    var password: String
 )
 
 fun UserDto.toUser(): UserEntity{
