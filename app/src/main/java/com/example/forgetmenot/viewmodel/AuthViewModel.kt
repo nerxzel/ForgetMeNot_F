@@ -19,7 +19,7 @@ data class LoginUiState(
     val isSubmitting: Boolean = false,
     val canSubmit: Boolean = false,
     val success: Boolean = false,
-    val errorMsg: String? = null
+    val errorMsg: String? = null,
 )
 
 data class RegisterUiState(
@@ -191,17 +191,15 @@ class AuthViewModel(
         _profile.update { it.copy(canSubmit = noErrors && filled) }
     }
 
-    private fun loadCurrentUser(email: String) {
-        viewModelScope.launch {
-            val user = repository.getUserByEmail(email)
-            if (user != null) {
-                _profile.update {
-                    it.copy(
-                        id = user.id,
-                        name = user.name,
-                        email = user.email
-                    )
-                }
+    private suspend fun loadCurrentUser(email: String) {
+        val user = repository.getUserByEmail(email)
+        if (user != null) {
+            _profile.update {
+                it.copy(
+                    id = user.id,
+                    name = user.name,
+                    email = user.email
+                )
             }
         }
     }
