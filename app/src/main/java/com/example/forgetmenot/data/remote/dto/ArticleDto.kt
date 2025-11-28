@@ -11,7 +11,7 @@ data class ArticleDto(
     val condition: String,
     val acquisitionDate: String,
     val location: String,
-    val email: String
+    val idUsuario: String
 )
 
 fun ArticleDto.toArticle(): Article {
@@ -29,7 +29,7 @@ fun ArticleDto.toArticle(): Article {
     )
 }
 
-fun Article.toDto(email: String): ArticleDto {
+fun Article.toDto(idUsuario: String): ArticleDto {
     return ArticleDto(
         id = id,
         name = name,
@@ -39,6 +39,6 @@ fun Article.toDto(email: String): ArticleDto {
         condition = condition,
         acquisitionDate = purchaseDate,
         location = location,
-        email = email
+        idUsuario = idUsuario
     )
 }

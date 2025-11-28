@@ -31,14 +31,14 @@ import com.example.forgetmenot.ui.theme.reddish
 @Composable
 fun HomeScreen(
     articleViewModel: ArticleViewModel,
-    email: String,
+    currentUserId: String,
     onArticleClick: (Long) -> Unit,
     onAddItemClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LaunchedEffect(email) {
-        if (email.isNotBlank()) {
-            articleViewModel.loadAllArticles(email)
+    LaunchedEffect(currentUserId) {
+        if (currentUserId.isNotBlank()) {
+            articleViewModel.loadAllArticles(currentUserId)
         }
     }
     val bg = MaterialTheme.colorScheme.background

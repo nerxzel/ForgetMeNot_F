@@ -22,17 +22,17 @@ class ArticleRepository (
         }
     }
 
-    suspend fun addArticle(article: Article, email: String) = withContext(Dispatchers.IO) {
+    suspend fun addArticle(article: Article, idUsuario: String) = withContext(Dispatchers.IO) {
         try {
-            articleService.addArticle(article.toDto(email))
+            articleService.addArticle(article.toDto(idUsuario))
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    suspend fun updateArticle(article: Article, email: String) = withContext(Dispatchers.IO) {
+    suspend fun updateArticle(article: Article, idUsuario: String) = withContext(Dispatchers.IO) {
         try {
-            articleService.updateArticle(article.id, article.toDto(email))
+            articleService.updateArticle(article.id, article.toDto(idUsuario))
         } catch (e: Exception) {
             e.printStackTrace()
         }

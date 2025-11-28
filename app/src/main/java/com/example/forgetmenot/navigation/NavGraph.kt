@@ -95,11 +95,11 @@ fun AppNavGraph(navController: NavHostController,
                     val loginState by authViewModel.login.collectAsState()
                     val profileState by authViewModel.profile.collectAsState()
                     // Use profile email if available (session restored), otherwise login email
-                    val userEmail = if (profileState.email.isNotBlank()) profileState.email else loginState.email
+                    val currentUserId = profileState.id.toString()
 
                     HomeScreen(
                         articleViewModel = articleViewModel,
-                        email = userEmail,
+                        currentUserId = currentUserId,
                         onArticleClick = onArticleClick,
                         onAddItemClick = onAddItemClick,
                         modifier = Modifier.padding(innerPadding)
