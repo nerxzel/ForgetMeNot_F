@@ -12,7 +12,7 @@ import retrofit2.http.Query
 interface ArticleService {
 
     @GET("article/all/mail")
-    suspend fun getArticles(@Query("email") email: String): List<ArticleDto>
+    suspend fun getArticles(@Query("idUsuario") idUsuario: String): List<ArticleDto>
 
     @GET("article/{id}")
     suspend fun getArticleById(@Path("id") id: Long): ArticleDto
