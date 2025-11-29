@@ -35,14 +35,6 @@ fun ArticleForm(
         Spacer(Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = description.value,
-            onValueChange = { description.value = it },
-            label = { Text("Descripción") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(8.dp))
-
-        OutlinedTextField(
             value = category.value,
             onValueChange = { category.value = it },
             label = { Text("Categoría") },
@@ -88,12 +80,5 @@ fun ArticleForm(
         )
         Spacer(Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = tags.value,
-            onValueChange = { tags.value = it },
-            label = { Text("Tags (separados por coma)") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
     }
 }

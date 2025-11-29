@@ -125,7 +125,7 @@ fun DetailsScreen(
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(12.dp)) {
             ArticleForm(
                 name = name,
                 description = description,
@@ -177,8 +177,6 @@ fun DetailsScreen(
                     tags.value
                 )
             }
-
-            Spacer(Modifier.height(16.dp))
 
             if (imageUri != null) {
                 AsyncImage(
