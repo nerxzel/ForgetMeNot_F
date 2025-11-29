@@ -51,7 +51,8 @@ fun RegisterForm(
 
         Text(
             text = "Por favor, ingrese sus datos para registro",
-            style = MaterialTheme.typography.headlineSmall
+            style = MaterialTheme.typography.headlineSmall,
+            color = Color.Black
         )
         Spacer(Modifier.height(12.dp))
 
@@ -81,7 +82,10 @@ fun RegisterForm(
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email
             ),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.Black
+            )
         )
         if (emailError != null) {
             Text(emailError, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
@@ -142,7 +146,9 @@ fun RegisterForm(
                 .fillMaxWidth()
                 .height(50.dp),
             shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = DarkNavy)
+            colors = ButtonDefaults.buttonColors(
+                disabledContainerColor = Color.LightGray,
+                disabledContentColor = Color.White)
         ) {
             if (isSubmitting) {
                 CircularProgressIndicator(strokeWidth = 2.dp, modifier = Modifier.size(18.dp))
@@ -160,13 +166,14 @@ fun RegisterForm(
 
         Spacer(Modifier.height(12.dp))
 
-        OutlinedButton(onClick = onGoLogin, modifier = Modifier
+        Button(onClick = onGoLogin, modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
             shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = DarkNavy)) {
+            colors = ButtonDefaults.buttonColors(containerColor = DarkNavy, contentColor = Color.White)) {
             Text("Ir a Login")
             }
         }
     }
 }
+

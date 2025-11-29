@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
@@ -20,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import com.example.forgetmenot.ui.components.ArticleForm
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import com.example.forgetmenot.ui.theme.LightBlueGray
 import com.example.forgetmenot.ui.theme.reddish
@@ -36,6 +38,7 @@ fun AddArticleScreen(
 ) {
 
     val state by articleViewModel.formState.collectAsState()
+    val context = LocalContext.current
 
     val name = remember { mutableStateOf(state.name) }
     val description = remember { mutableStateOf(state.description) }
@@ -137,6 +140,7 @@ fun AddArticleScreen(
             Button(
                 onClick = {
                     articleViewModel.addArticle()
+                    Toast.makeText(context, "Artículo agregado", Toast.LENGTH_SHORT).show()
                     onNavigateBack()
                 },
                 enabled = state.canSubmit,

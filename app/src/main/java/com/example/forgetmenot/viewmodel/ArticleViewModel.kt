@@ -1,8 +1,6 @@
 package com.example.forgetmenot.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.forgetmenot.data.local.model.Article
 import com.example.forgetmenot.data.repository.ArticleRepository
@@ -40,14 +38,12 @@ class ArticleViewModel(private val repository: ArticleRepository) : ViewModel() 
     private val _formState = MutableStateFlow(ArticleFormState())
     val formState: StateFlow<ArticleFormState> = _formState.asStateFlow()
 
-    init {
-        loadAllArticles()
-    }
+    private var currentUserId: String = ""
 
-    fun loadAllArticles() {
+    fun loadAllArticles(email: String) {
+        currentUserId = email
         viewModelScope.launch {
-
-            _articles.value = repository.getAllArticles()
+            _articles.value = repository.getAllArticles(email)
         }
     }
 
@@ -108,6 +104,7 @@ class ArticleViewModel(private val repository: ArticleRepository) : ViewModel() 
 
     fun addArticle() {
         if (!_formState.value.canSubmit) return
+        if (currentUserId.isBlank()) return
 
         viewModelScope.launch {
             val s = _formState.value
@@ -124,14 +121,15 @@ class ArticleViewModel(private val repository: ArticleRepository) : ViewModel() 
                 tags = s.tags.split(',').map { it.trim() }.filter { it.isNotEmpty() }
             )
 
-            repository.addArticle(newArticle)
+            repository.addArticle(newArticle, currentUserId)
 
-            loadAllArticles()
+            loadAllArticles(currentUserId)
         }
     }
 
     fun updateArticle(articleId: Long) {
         if (!_formState.value.canSubmit) return
+        if (currentUserId.isBlank()) return
 
         viewModelScope.launch {
             val s = _formState.value
@@ -147,8 +145,8 @@ class ArticleViewModel(private val repository: ArticleRepository) : ViewModel() 
                 imageUrl = s.imageUrl,
                 tags = s.tags.split(',').map { it.trim() }.filter { it.isNotEmpty() }
             )
-            repository.updateArticle(updatedArticle)
-            loadAllArticles()
+            repository.updateArticle(updatedArticle, currentUserId)
+            loadAllArticles(currentUserId)
         }
     }
 
@@ -159,7 +157,7 @@ class ArticleViewModel(private val repository: ArticleRepository) : ViewModel() 
     fun deleteArticle(article: Article) {
         viewModelScope.launch {
             repository.deleteArticle(article.id)
-            loadAllArticles()
+            loadAllArticles(currentUserId)
         }
     }
 }

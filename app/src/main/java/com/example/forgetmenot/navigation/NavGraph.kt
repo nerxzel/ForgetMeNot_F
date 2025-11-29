@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -34,8 +35,14 @@ fun AppNavGraph(navController: NavHostController,
                 authViewModel: AuthViewModel,
                 articleViewModel: ArticleViewModel) {
     val goHome: () -> Unit    = { navController.navigate(Route.Home.path) }
-    val goLogin: () -> Unit   = { navController.navigate(Route.Login.path) }
-    val goRegister: () -> Unit = { navController.navigate(Route.Register.path) }
+    val goLogin: () -> Unit   = {
+        authViewModel.resetLoginForm()
+        navController.navigate(Route.Login.path) }
+
+    val goRegister: () -> Unit = {
+        authViewModel.resetRegisterForm()
+        navController.navigate(Route.Register.path) }
+
     val goProfile: () -> Unit = { navController.navigate(Route.Profile.path) }
     val doLogout: () -> Unit = {
         authViewModel.clearUserSession()
@@ -91,8 +98,14 @@ fun AppNavGraph(navController: NavHostController,
                 modifier = Modifier
             ) {
                 composable(Route.Home.path) {
+                    val loginState by authViewModel.login.collectAsState()
+                    val profileState by authViewModel.profile.collectAsState()
+                    // Use profile email if available (session restored), otherwise login email
+                    val currentUserId = profileState.id.toString()
+
                     HomeScreen(
                         articleViewModel = articleViewModel,
+                        currentUserId = currentUserId,
                         onArticleClick = onArticleClick,
                         onAddItemClick = onAddItemClick,
                         modifier = Modifier.padding(innerPadding)

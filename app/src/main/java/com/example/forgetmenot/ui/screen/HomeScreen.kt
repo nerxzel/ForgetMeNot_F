@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.foundation.lazy.items
 import com.example.forgetmenot.ui.components.ArticleCard
 import com.example.forgetmenot.viewmodel.ArticleViewModel
@@ -30,10 +31,16 @@ import com.example.forgetmenot.ui.theme.reddish
 @Composable
 fun HomeScreen(
     articleViewModel: ArticleViewModel,
+    currentUserId: String,
     onArticleClick: (Long) -> Unit,
     onAddItemClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LaunchedEffect(currentUserId) {
+        if (currentUserId.isNotBlank()) {
+            articleViewModel.loadAllArticles(currentUserId)
+        }
+    }
     val bg = MaterialTheme.colorScheme.background
 
     val articles by articleViewModel.articles.collectAsState()

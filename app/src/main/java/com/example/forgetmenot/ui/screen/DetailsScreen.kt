@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.forgetmenot.data.local.model.Article
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
@@ -21,6 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import com.example.forgetmenot.ui.components.ArticleForm
 import com.example.forgetmenot.ui.theme.LightBlueGray
 import com.example.forgetmenot.ui.theme.reddish
@@ -37,7 +39,10 @@ fun DetailsScreen(
     onClearNewImage: () -> Unit
 ) {
 
+    val context = LocalContext.current
+
     val state by articleViewModel.formState.collectAsState()
+    var showDeleteDialog by remember { mutableStateOf(false) }
     val article by remember(articleId) {
         derivedStateOf { articleViewModel.getArticleById(articleId) }
     }
@@ -186,18 +191,63 @@ fun DetailsScreen(
                 Icon(Icons.Default.CameraAlt, "Cambiar Foto")
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(8.dp))
 
             Button(
                 onClick = {
                     articleViewModel.updateArticle(articleId)
+                    Toast.makeText(context, "Artículo actualizado", Toast.LENGTH_SHORT).show()
                     onNavigateBack()
                 },
                 enabled = state.canSubmit,
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
             ) {
                 Text("Guardar Cambios")
-            }}
+            }
+                Button(
+                    onClick = {
+                        showDeleteDialog = true
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
+                    ),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                ) {
+                    Text("Eliminar Artículo")
+                }
+            }
         }
+
+        Spacer(Modifier.height(4.dp))
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("¿Eliminar artículo?") },
+            text = { Text("Esta acción es permanente y no se puede deshacer. ¿Desea confirmar?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (article != null) {
+                            articleViewModel.deleteArticle(article!!)
+                            showDeleteDialog = false
+                            onNavigateBack()
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Eliminar")
+                }
+            },
+            dismissButton = {
+                OutlinedButton(onClick = { showDeleteDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 }
