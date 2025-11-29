@@ -35,8 +35,14 @@ fun AppNavGraph(navController: NavHostController,
                 authViewModel: AuthViewModel,
                 articleViewModel: ArticleViewModel) {
     val goHome: () -> Unit    = { navController.navigate(Route.Home.path) }
-    val goLogin: () -> Unit   = { navController.navigate(Route.Login.path) }
-    val goRegister: () -> Unit = { navController.navigate(Route.Register.path) }
+    val goLogin: () -> Unit   = {
+        authViewModel.resetLoginForm()
+        navController.navigate(Route.Login.path) }
+
+    val goRegister: () -> Unit = {
+        authViewModel.resetRegisterForm()
+        navController.navigate(Route.Register.path) }
+
     val goProfile: () -> Unit = { navController.navigate(Route.Profile.path) }
     val doLogout: () -> Unit = {
         authViewModel.clearUserSession()

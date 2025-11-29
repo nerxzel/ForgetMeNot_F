@@ -78,6 +78,14 @@ class AuthViewModel(
     private val _profile = MutableStateFlow(ProfileUiState())
     val profile: StateFlow<ProfileUiState> = _profile
 
+    fun resetLoginForm() {
+        _login.value = LoginUiState()
+    }
+
+    fun resetRegisterForm() {
+        _register.value = RegisterUiState()
+    }
+
     fun onLoginEmailChange(value: String) {
         _login.update { it.copy(email = value, emailError = validateEmail(value)) }
         recomputeLoginCanSubmit()
@@ -297,6 +305,10 @@ class AuthViewModel(
                 //_profile.update { it.copy(isChangingPassword = false, passwordChangeErrorMsg = verifyResult.exceptionOrNull()?.message ?: "La contraseña actual es incorrecta.") }
             //}
         }
+    }
+
+    fun clearProfileSaveResult() {
+        _profile.update { it.copy(saveSuccess = false, errorMsg = null) }
     }
     fun clearPasswordChangeResult() {
         _profile.update { it.copy(passwordChangeSuccess = false, passwordChangeErrorMsg = null) }

@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.forgetmenot.data.local.model.Article
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
@@ -21,6 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import com.example.forgetmenot.ui.components.ArticleForm
 import com.example.forgetmenot.ui.theme.LightBlueGray
 import com.example.forgetmenot.ui.theme.reddish
@@ -36,6 +38,8 @@ fun DetailsScreen(
     newImageUri: String?,
     onClearNewImage: () -> Unit
 ) {
+
+    val context = LocalContext.current
 
     val state by articleViewModel.formState.collectAsState()
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -192,6 +196,7 @@ fun DetailsScreen(
             Button(
                 onClick = {
                     articleViewModel.updateArticle(articleId)
+                    Toast.makeText(context, "Artículo actualizado", Toast.LENGTH_SHORT).show()
                     onNavigateBack()
                 },
                 enabled = state.canSubmit,

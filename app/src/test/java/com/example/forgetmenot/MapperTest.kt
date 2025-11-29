@@ -5,7 +5,7 @@ import com.example.forgetmenot.data.remote.dto.ArticleDto
 import com.example.forgetmenot.data.remote.dto.UserDto
 import com.example.forgetmenot.data.remote.dto.toDto
 import com.example.forgetmenot.data.remote.dto.toUser
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 
 class MapperTest {
