@@ -100,7 +100,6 @@ fun AppNavGraph(navController: NavHostController,
                 composable(Route.Home.path) {
                     val loginState by authViewModel.login.collectAsState()
                     val profileState by authViewModel.profile.collectAsState()
-                    // Use profile email if available (session restored), otherwise login email
                     val currentUserId = profileState.id.toString()
 
                     HomeScreen(
