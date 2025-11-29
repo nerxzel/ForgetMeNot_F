@@ -18,7 +18,6 @@ import com.example.forgetmenot.viewmodel.AuthViewModelFactory
 import com.example.forgetmenot.ui.theme.ForgetMeNot_Theme
 import com.example.forgetmenot.viewmodel.ArticleViewModelFactory
 import androidx.compose.runtime.remember
-import com.example.forgetmenot.data.local.database.DatabaseHelper
 import com.example.forgetmenot.data.repository.ArticleRepository
 
 class MainActivity : ComponentActivity() {
@@ -34,7 +33,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppRoot() {
 
-    val context = LocalContext.current.applicationContext
     val repository = remember { UserRepository() }
     val authViewModel: AuthViewModel = viewModel (
         factory = AuthViewModelFactory(repository)
@@ -47,7 +45,7 @@ fun AppRoot() {
 
 
     val navController = rememberNavController()
-    ForgetMeNot_Theme {
+    ForgetMeNot_Theme(darkTheme = false) {
         Surface(color = MaterialTheme.colorScheme.background) {
             AppNavGraph(navController = navController,
                 authViewModel = authViewModel,

@@ -44,7 +44,6 @@ data class ProfileUiState(
     val name: String = "",
     val email: String = "",
 
-    val currentPassword: String = "",
     val newPassword: String = "",
     val confirmNewPassword: String = "",
 
@@ -60,7 +59,6 @@ data class ProfileUiState(
 
     val nameError: String? = null,
     val emailError: String? = null,
-    val currentPasswordError: String? = null,
     val newPasswordError: String? = null,
     val confirmNewPasswordError: String? = null
 )
@@ -255,10 +253,6 @@ class AuthViewModel(
         }
     }
 
-    fun onCurrentPasswordChange(value: String) {
-        _profile.update { it.copy(currentPassword = value, currentPasswordError = validateNotBlank(value, "Contraseña Actual")) }
-        recomputePasswordCanSubmit()
-    }
     fun onNewPasswordChange(value: String) {
         _profile.update { it.copy(newPassword = value, newPasswordError = validateStrongPassword(value)) }
         _profile.update { it.copy(confirmNewPasswordError = validateConfirm(it.newPassword, it.confirmNewPassword)) }
@@ -270,8 +264,8 @@ class AuthViewModel(
     }
     private fun recomputePasswordCanSubmit() {
         val s = _profile.value
-        val noErrors = listOf(s.currentPasswordError, s.newPasswordError, s.confirmNewPasswordError).all { it == null }
-        val filled = s.currentPassword.isNotBlank() && s.newPassword.isNotBlank() && s.confirmNewPassword.isNotBlank()
+        val noErrors = listOf(s.newPasswordError, s.confirmNewPasswordError).all { it == null }
+        val filled =  s.newPassword.isNotBlank() && s.confirmNewPassword.isNotBlank()
         _profile.update { it.copy(canChangePassword = noErrors && filled) }
     }
     fun changePassword() {
@@ -281,10 +275,6 @@ class AuthViewModel(
             _profile.update { it.copy(isChangingPassword = true, passwordChangeErrorMsg = null, passwordChangeSuccess = false) }
             delay(500)
 
-
-            //val verifyResult = repository.verifyPassword(s.id, s.currentPassword)
-
-            //if (verifyResult.isSuccess) {
             val existingUser = repository.getUserById(s.id)
             if (existingUser == null) {
                 _profile.update { it.copy(isSubmitting = false, errorMsg = "Error: Usuario no encontrado") }
@@ -295,15 +285,12 @@ class AuthViewModel(
                     if (updateResult.isSuccess) {
                         it.copy(
                             isChangingPassword = false, passwordChangeSuccess = true,
-                            currentPassword = "", newPassword = "", confirmNewPassword = ""
+                            newPassword = "", confirmNewPassword = ""
                         )
                     } else {
                         it.copy(isChangingPassword = false, passwordChangeErrorMsg = "Error al guardar la nueva contraseña.")
                     }
                 }
-            //} else {
-                //_profile.update { it.copy(isChangingPassword = false, passwordChangeErrorMsg = verifyResult.exceptionOrNull()?.message ?: "La contraseña actual es incorrecta.") }
-            //}
         }
     }
 

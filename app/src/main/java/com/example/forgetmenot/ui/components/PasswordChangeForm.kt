@@ -15,32 +15,14 @@ import com.example.forgetmenot.viewmodel.ProfileUiState
 @Composable
 fun PasswordChangeForm(
     profileState: ProfileUiState,
-    onCurrentPasswordChange: (String) -> Unit,
     onNewPasswordChange: (String) -> Unit,
     onConfirmNewPasswordChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var showCurrentPassword by remember { mutableStateOf(false) }
     var showNewPassword by remember { mutableStateOf(false) }
     var showConfirmPassword by remember { mutableStateOf(false) }
 
     Column(modifier = modifier) {
-        OutlinedTextField(
-            value = profileState.currentPassword,
-            onValueChange = onCurrentPasswordChange,
-            label = { Text("Contraseña Actual") },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = if (showCurrentPassword) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = { PasswordVisibilityToggle(showCurrentPassword) { showCurrentPassword = it } },
-            isError = profileState.currentPasswordError != null,
-            singleLine = true
-        )
-        if (profileState.currentPasswordError != null) {
-            val errorText = profileState.currentPasswordError
-            Text(errorText, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
-        }
-        Spacer(Modifier.height(8.dp))
-
         OutlinedTextField(
             value = profileState.newPassword,
             onValueChange = onNewPasswordChange,

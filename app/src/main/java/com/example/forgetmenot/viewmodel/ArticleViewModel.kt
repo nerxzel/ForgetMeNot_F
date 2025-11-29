@@ -40,8 +40,6 @@ class ArticleViewModel(private val repository: ArticleRepository) : ViewModel() 
 
     private var currentUserId: String = ""
 
-    // Removed init block to avoid loading without email
-
     fun loadAllArticles(email: String) {
         currentUserId = email
         viewModelScope.launch {
@@ -106,7 +104,7 @@ class ArticleViewModel(private val repository: ArticleRepository) : ViewModel() 
 
     fun addArticle() {
         if (!_formState.value.canSubmit) return
-        if (currentUserId.isBlank()) return // Should handle error or ensure email is set
+        if (currentUserId.isBlank()) return
 
         viewModelScope.launch {
             val s = _formState.value

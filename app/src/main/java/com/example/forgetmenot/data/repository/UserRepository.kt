@@ -8,7 +8,6 @@ import com.example.forgetmenot.data.remote.dto.toUser
 import retrofit2.HttpException
 
 class UserRepository (
-    //private val userDao: UserDao
 ){
 
     private val userService = RetrofitInstance.userService
@@ -22,14 +21,6 @@ class UserRepository (
         } catch (e: Exception){
             return Result.failure(IllegalArgumentException("Usuario no encontrado"))
         }
-
-        /*val user = userDao.getByEmail(email)
-        return if(user != null && user.password == pass){
-            Result.success(user)
-        }
-        else{
-            Result.failure(IllegalArgumentException("Credenciales inválidas"))
-        }*/
     }
 
     suspend fun register(name:String, email: String, pass: String): Result<Long>{
@@ -56,12 +47,10 @@ class UserRepository (
     }
 
     suspend fun getUserByEmail(email: String): UserEntity? {
-        //return userDao.getByEmail(email)
         return userService.getUserByEmail(email).toUser()
     }
 
     suspend fun getUserById(id: Long): UserEntity? {
-        //return userDao.getById(id)
         return userService.getUserById(id).toUser()
     }
 
@@ -73,24 +62,7 @@ class UserRepository (
             return Result.failure(e)
         }
 
-        /*return try {
-            userDao.update(user)
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }*/
     }
-
-    suspend fun verifyPassword(userId: Long, currentPasswordToCheck: String): Result<Unit> {
-        /*val user = userDao.getById(userId)
-        return if (user != null && user.password == currentPasswordToCheck) {
-            Result.success(Unit)
-        } else {
-            Result.failure(IllegalArgumentException("Contraseña actual incorrecta"))
-        }*/
-        return Result.success(Unit)
-    }
-
 
     suspend fun updatePassword(user: UserEntity, newPassword: String): Result<Unit> {
         val newUser = user.toDto()
@@ -101,12 +73,7 @@ class UserRepository (
         } catch (e: Exception){
             return Result.failure(e)
         }
-        /*return try {
-            userDao.updatePassword(userId, newPassword)
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }*/
+
     }
 
 }

@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.forgetmenot.R
+import com.example.forgetmenot.ui.theme.ForgetMeNotBlue
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,7 +41,7 @@ fun AppTopBar(
 
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary
+            containerColor = MaterialTheme.colorScheme.tertiary
         ),
         title = {
             Text(
@@ -56,7 +57,7 @@ fun AppTopBar(
                     modifier = Modifier.Companion
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary)
+                        .background(MaterialTheme.colorScheme.onPrimary)
                         .padding(6.dp),
                     contentAlignment = Alignment.Companion.Center
                 )
@@ -66,6 +67,7 @@ fun AppTopBar(
                         contentDescription = "Icono del perfil",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Companion.Fit
+
                     )
                 }
             }
@@ -77,15 +79,16 @@ fun AppTopBar(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary),
+                        .background(MaterialTheme.colorScheme.onPrimary),
                     contentAlignment = Alignment.Companion.Center
                 )
                 {
                     Image(
-                        painter = painterResource(id = R.drawable.user2),
+                        painter = painterResource(id = R.drawable.user),
                         contentDescription = "Icono del perfil",
                         modifier = Modifier
-                            .fillMaxSize(),
+                            .fillMaxSize()
+                            .padding(7.dp),
                         contentScale = ContentScale.Companion.Fit
                     )
                 }
@@ -96,7 +99,7 @@ fun AppTopBar(
                     modifier = Modifier.Companion
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary),
+                        .background(MaterialTheme.colorScheme.onPrimary),
                     contentAlignment = Alignment.Companion.Center
                 )
                 {

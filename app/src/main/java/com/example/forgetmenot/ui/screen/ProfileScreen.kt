@@ -40,9 +40,6 @@ fun ProfileScreen(
 
     var showEmailDialog by remember { mutableStateOf(false) }
     var showPasswordDialog by remember { mutableStateOf(false) }
-    var showCurrentPassword by remember { mutableStateOf(false) }
-    var showNewPassword by remember { mutableStateOf(false) }
-    var showConfirmPassword by remember { mutableStateOf(false) }
 
     LaunchedEffect(profileState.saveSuccess) {
         if (profileState.saveSuccess) {
@@ -121,7 +118,6 @@ fun ProfileScreen(
                 Column(modifier = Modifier.padding(16.dp)) {
                     PasswordChangeForm(
                         profileState = profileState,
-                        onCurrentPasswordChange = authViewModel::onCurrentPasswordChange,
                         onNewPasswordChange = authViewModel::onNewPasswordChange,
                         onConfirmNewPasswordChange = authViewModel::onConfirmNewPasswordChange
                     )
@@ -150,7 +146,7 @@ fun ProfileScreen(
         AlertDialog(
             onDismissRequest = { showEmailDialog = false },
             title = { Text("Confirmar cambios") },
-            text = { Text("¿Estás seguro de que quieres actualizar su correo?") },
+            text = { Text("¿Estás seguro de que quieres actualizar su perfil?") },
             confirmButton = {
                 Button(onClick = {
                     authViewModel.saveProfile()

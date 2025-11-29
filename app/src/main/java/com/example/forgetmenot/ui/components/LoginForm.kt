@@ -73,7 +73,8 @@ fun LoginForm(
         Text(
             text = "Bienvenido",
             style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
         )
 
         Spacer(Modifier.height(20.dp))
@@ -141,7 +142,9 @@ fun LoginForm(
                 .fillMaxWidth()
                 .height(50.dp),
             shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = DarkNavy)
+            colors = ButtonDefaults.buttonColors(
+                disabledContainerColor = Color.LightGray,
+                disabledContentColor = Color.White)
         ) {
             if (isSubmitting) {
                 CircularProgressIndicator(strokeWidth = 2.dp, modifier = Modifier.size(18.dp))
@@ -159,12 +162,13 @@ fun LoginForm(
 
         Spacer(Modifier.height(12.dp))
 
-        OutlinedButton(onClick = onGoRegister,
+        Button(
+            onClick = onGoRegister,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
-            shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = DarkNavy)) {
+            shape = RoundedCornerShape(8.dp)
+        ) {
             Text("Crear cuenta")
         }
     }
